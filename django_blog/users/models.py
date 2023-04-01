@@ -3,4 +3,6 @@ from django.db import models
 
 
 class CustomUser(AbstractUser):
-    pass
+    email = models.EmailField()
+    first_name = models.TextField(max_length=25)
+    last_name = models.TextField(max_length=35)
