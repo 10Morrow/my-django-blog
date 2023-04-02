@@ -43,3 +43,6 @@ class Followers(models.Model):
     subscriber = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subscriptions')
     subscribed_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subscribers')
 
+    def __str__(self):
+        return f"{self.subscriber} subscribe to {self.subscribed_to}"
+
