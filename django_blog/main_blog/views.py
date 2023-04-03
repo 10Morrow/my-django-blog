@@ -8,13 +8,37 @@ User = get_user_model()
 
 
 class GetForMainPage(View):
-    def get(self, request):
-        article_list = [article.title for article in Article.objects.all()]
-        return HttpResponse(f"Список статей: {article_list}")
 
-    def post(self, request):
-        selected_category = request.POST.get('category')
-        return HttpResponse(f"Выбранная категория: {selected_category}")
+    @staticmethod
+    def get_base_data_template(category):
+        if category:
+            article_list = Article.objects.filter(category_list__name=catalog).order_by('-pub_date')[:10]
+        else:
+            article_list = Article.objects.all().order_by('-pub_date')[:10]
+        return article_list
+
+    def get(self, request):
+        selected_category = request.GET.get('category')
+        if request.user.is_authentificate:
+            user = request.user
+            subscribed_to = [users.id for users in Followers.objects.filter(subscribed_to = user.id)]
+            if subscribed_to:
+                if selected_category:
+                    article_list = Article.objects.filter(category_list__name=selected_category,
+                                                          author__in=subscribed_to).order_by('-pub_date')[:10]
+                else:
+                    article_list = Article.objects.filter(author__in=subscribed_to).order_by('-pub_date')[:10]
+                if not article_list:
+                    article_list = self.get_base_data_template(selected_category)
+            else:
+                article_list = self.get_base_data_template(selected_category)
+
+            return HttpResponse(f"Список статей: {article_list}")
+
+        else:
+            article_list = self.get_base_data_template(selected_category)
+            return HttpResponse(f"Список статей: {article_list}")
+
 
 
 class GetArticle(View):
