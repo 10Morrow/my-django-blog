@@ -1,10 +1,13 @@
-from django.http import HttpResponse
-from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.contrib.auth.views import LoginView, LogoutView
+from django.shortcuts import render
+from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.views import View
-from .forms import RegistrationUserForm
 from django.contrib.auth import get_user_model
+
+from .forms import RegistrationUserForm
+from .forms import LoginForm
+
 
 User = get_user_model()
 
@@ -31,3 +34,11 @@ class RegistrationView(View):
         user_form = RegistrationUserForm()
         return render(request, 'users/registration.html', {'form': user_form})
 
+
+class AuthenticationView(LoginView):
+    form_class = LoginForm
+    template_name = 'users/login.html'
+
+
+class LogoutView(LogoutView):
+    next_page = reverse_lazy('main_blog:blog')
