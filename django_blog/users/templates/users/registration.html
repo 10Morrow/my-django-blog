@@ -1,0 +1,22 @@
+{% extends 'users/base.html' %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block content %}
+    {% if errors %}
+        <div class="alert alert-danger" role="alert">
+            <ul>
+            {% for error in errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <h1>Регистрация</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Зарегистрироваться</button>
+    </form>
+{% endblock %}
