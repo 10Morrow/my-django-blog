@@ -4,51 +4,32 @@ from django.shortcuts import render, get_object_or_404
 from django.views import View
 from django.contrib.auth import get_user_model, authenticate
 
+from .services import get_article_list
+
 User = get_user_model()
 
 
 class GetForMainPage(View):
-
+    """return html template with articles list"""
     @staticmethod
-    def get_base_data_template(category):
-        if category:
-            article_list = Article.objects.filter(category_list__name=category).order_by('-pub_date')[:10]
-        else:
-            article_list = Article.objects.all().order_by('-pub_date')[:10]
-        return article_list
-
     def get(self, request):
         selected_category = request.GET.get('category')
-        if request.user.is_authenticated:
-            user = request.user
-            subscribed_to = [users.id for users in Followers.objects.filter(subscribed_to = user.id)]
-            if subscribed_to:
-                if selected_category:
-                    article_list = Article.objects.filter(category_list__name=selected_category,
-                                                          author__in=subscribed_to).order_by('-pub_date')[:10]
-                else:
-                    article_list = Article.objects.filter(author__in=subscribed_to).order_by('-pub_date')[:10]
-                if not article_list:
-                    article_list = self.get_base_data_template(selected_category)
-            else:
-                article_list = self.get_base_data_template(selected_category)
-
-            return HttpResponse(f"Список статей: {article_list}")
-
-        else:
-            article_list = self.get_base_data_template(selected_category)
-            return HttpResponse(f"Список статей: {article_list}")
+        article_list = get_article_list(request, selected_category)
+        return HttpResponse(f"Список статей: {article_list}")
 
 
 class GetArticle(View):
+    """return html template with article data which taken by 'art_name'"""
+    @staticmethod
     def get(self, request, art_name):
         article = get_object_or_404(Article, slug=art_name)
         comments = Comment.objects.filter(post=article.id)
-
-        return HttpResponse(f"Статья: {article.title}, комментарии: {comments[0]}")
+        return render(request, 'main_blog/article.html', {"article": article, "comments": comments})
 
 
 class GetUserPage(View):
+    """return html template with user profile data which taken by 'username'"""
+    @staticmethod
     def get(self, request, username):
         user = get_object_or_404(User, username__iexact=username)
         followers_count = len(Followers.objects.filter(subscribed_to = user.id))
@@ -56,4 +37,9 @@ class GetUserPage(View):
         profile_data = {"username": user.username, "first_name": user.first_name,
                         "second_name": user.last_name, "followers_count": followers_count,
                         "written_articles": written_articles}
-        return HttpResponse(f"информация о пользователе {user.username}: {profile_data}")
+        return render(request, 'main_blog/profile.html', profile_data)
+
+
+class CreateArticle(View):
+    """return html template with form for creating articles"""
+    pass
