@@ -1,4 +1,4 @@
-from models import Article, Followers
+from .models import Article, Followers
 
 
 def _get_base_data_template(category):

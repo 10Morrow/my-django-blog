@@ -1,0 +1,32 @@
+/* CSS-стили для формы */
+h1 {
+    text-align: center;
+}
+form {
+    height: auto;
+    max-height: 500px;
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="password"] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: none;
+    border-bottom: 2px solid #ddd;
+}
+
+form button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}

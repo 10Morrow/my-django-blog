@@ -11,7 +11,7 @@ User = get_user_model()
 
 class GetForMainPage(View):
     """return html template with articles list"""
-    @staticmethod
+
     def get(self, request):
         selected_category = request.GET.get('category')
         article_list = get_article_list(request, selected_category)
@@ -20,7 +20,6 @@ class GetForMainPage(View):
 
 class GetArticle(View):
     """return html template with article data which taken by 'art_name'"""
-    @staticmethod
     def get(self, request, art_name):
         article = get_object_or_404(Article, slug=art_name)
         comments = Comment.objects.filter(post=article.id)
@@ -29,7 +28,6 @@ class GetArticle(View):
 
 class GetUserPage(View):
     """return html template with user profile data which taken by 'username'"""
-    @staticmethod
     def get(self, request, username):
         user = get_object_or_404(User, username__iexact=username)
         followers_count = len(Followers.objects.filter(subscribed_to = user.id))
