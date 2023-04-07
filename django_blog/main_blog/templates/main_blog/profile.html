@@ -1,0 +1,18 @@
+{% extends 'main_blog/base.html' %}
+
+{% block title %}страница пользователя{% endblock %}
+
+{% block content %}
+<h3>Никнейм: {{ username }}</h3>
+<h3>Имя: {{ first_name }}</h3>
+<h3>Фамилия: {{ last_name }}</h3>
+<h3>Количество подписчиков: {{ followers_count }}</h3>
+{% if written_articles %}
+        <h3>Написанные статьи:</h3>
+        {% for article in written_articles %}
+            <h3><ul>{{ article.title }}</ul></h3>
+        {% endfor %}
+{% else %}
+        <h3>У автора еще нету статей</h3>
+{% endif %}
+{% endblock %}

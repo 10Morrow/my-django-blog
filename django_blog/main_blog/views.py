@@ -15,7 +15,7 @@ class GetForMainPage(View):
     def get(self, request):
         selected_category = request.GET.get('category')
         article_list = get_article_list(request, selected_category)
-        return HttpResponse(f"Список статей: {article_list}")
+        return render(request, 'main_blog/main_page.html', {"article_list": article_list})
 
 
 class GetArticle(View):
@@ -40,4 +40,9 @@ class GetUserPage(View):
 
 class CreateArticle(View):
     """return html template with form for creating articles"""
-    pass
+    def get(self,request):
+        form=[]
+        return render(request, 'main_blog/create_article.html', {'form':form})
+
+    def post(self,request):
+        pass

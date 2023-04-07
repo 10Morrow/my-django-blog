@@ -1,0 +1,19 @@
+{% extends 'main_blog/base.html' %}
+
+{% block title %}Главная страница{% endblock %}
+
+{% block content %}
+	<div class="container">
+		<main>
+			<article class="post">
+				<header class="post-header">
+					<h2>{{article.title}}</h2>
+					<p class="post-meta">Опубликовано {{article.pub_date}}</p>
+				</header>
+				<section class="post-content">
+					<p>{{article.content}}</p>
+				</section>
+			</article>
+		</main>
+	</div>
+{% endblock %}

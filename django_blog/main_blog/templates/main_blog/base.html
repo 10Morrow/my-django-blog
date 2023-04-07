@@ -1,10 +1,24 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'main_blog/css/style.css' %}">
 </head>
 <body>
-
+<header>
+		<div class="head_container">
+			<h1>Мой блог</h1>
+			<nav>
+				<ul>
+					<li><a href="#">О проекте</a></li>
+					<li><a href="#">Статьи</a></li>
+					<li><a href="#">Обо мне</a></li>
+					<li><a href="#">Контакты</a></li>
+				</ul>
+			</nav>
+		</div>
+</header>
+    {% block content %}{% endblock %}
 </body>
 </html>
