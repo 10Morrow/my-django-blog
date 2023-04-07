@@ -27,8 +27,7 @@ class RegistrationView(View):
             url = reverse('main_blog:blog')
             return HttpResponseRedirect(url)
         else:
-            errors = form.errors
-            return render(request, 'users/registration.html', {'form': form, 'errors': errors})
+            return render(request, 'users/registration.html', {'form': form})
 
     def get(self, request):
         user_form = RegistrationUserForm()
