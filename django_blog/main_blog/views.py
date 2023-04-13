@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views import View
 from django.contrib.auth import get_user_model, authenticate
 from django.urls import reverse
-from django.utils.text import slugify
+from transliterate import slugify
 from .services import get_article_list
 from .forms import WriteArticleForm
 User = get_user_model()
@@ -55,8 +55,9 @@ class CreateArticle(View):
                 content = form.cleaned_data.get('content')
                 category_list = Category.objects.get(name=form.cleaned_data.get('category')).id
                 slug = slugify(title)
-                new_article = Article.objects.create(slug=slug, author=author, title=title, preview_pic=preview_pic,
-                                 content=content)
+                new_article = Article.objects.create(slug=slug, author=author, title=title,
+                                                     preview_pic=preview_pic,
+                                                     content=content)
                 new_article.category_list.set([category_list])
                 new_article.save()
                 url = reverse('main_blog:blog')
