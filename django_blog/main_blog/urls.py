@@ -5,10 +5,11 @@ from django.conf.urls.static import static
 
 app_name = 'main_blog'
 urlpatterns = [
-    path('', GetForMainPage.as_view(), name='blog'),
-    path('create_article/', CreateArticle.as_view(), name='create_article'),
-    path('article/<slug:art_name>/', GetArticle.as_view(), name='article_name'),
-    path('<slug:username>/', GetUserPage.as_view(), name='username'),
+    path('', AboutProject.as_view(), name='about'),
+    path('blog/', GetForMainPage.as_view(), name='blog'),
+    path('blog/create_article/', CreateArticle.as_view(), name='create_article'),
+    path('blog/article/<slug:art_name>/', GetArticle.as_view(), name='article_name'),
+    path('blog/<slug:username>/', GetUserPage.as_view(), name='username'),
 ]
 
 

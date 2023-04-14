@@ -1,24 +1,36 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>{% block title %}{% endblock %}</title>
+    <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="{% static 'main_blog/css/style.css' %}">
 </head>
+
 <body>
-<header>
-		<div class="head_container">
-			<h1>Мой блог</h1>
-			<nav>
-				<ul>
-					<li><a href="#">О проекте</a></li>
-					<li><a href="#">Статьи</a></li>
-					<li><a href="#">Обо мне</a></li>
-					<li><a href="#">Контакты</a></li>
-				</ul>
-			</nav>
-		</div>
-</header>
+    <header>
+        <div class="header_section">
+            <div class="header__item headerlogo">
+                DEPOBLOG
+            </div>
+            <div class="header__item headerButton"><a href="{% url 'main_blog:about' %}">О проекте</a></div>
+            <div class="header__item headerButton"><a href="{% url 'main_blog:blog' %}">Читать статьи</a></div>
+        </div>
+        <div class="header_section">
+            {% if not user.is_authenticated %}
+                <div class="header__item headerButton"><a href="{% url 'users:login' %}">Войти</a></div>
+                <div class="header__item headerButton"><a href="{% url 'users:registration' %}">Зарегистрироваться</a></div>
+            {% else %}
+                <div class="header__item headerButton"><a href="{% url 'users:logout' %}">Выйти</a></div>
+            {% endif %}
+        </div>
+    </header>
+
     {% block content %}{% endblock %}
+
+    <footer>
+        место для футера.
+    </footer>
 </body>
 </html>

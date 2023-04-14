@@ -1,4 +1,5 @@
-from .models import Article, Followers, Category, Comment
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.views import View
@@ -7,6 +8,8 @@ from django.urls import reverse
 from transliterate import slugify
 from .services import get_article_list
 from .forms import WriteArticleForm
+from .models import Article, Followers, Category, Comment
+
 User = get_user_model()
 
 
@@ -16,7 +19,7 @@ class GetForMainPage(View):
     def get(self, request):
         selected_category = request.GET.get('category')
         article_list = get_article_list(request, selected_category)
-        return render(request, 'main_blog/main_page.html', {"article_list": article_list})
+        return render(request, 'main_blog/main_page.html', {"article_list": article_list, "user": request.user})
 
 
 class GetArticle(View):
@@ -38,7 +41,7 @@ class GetUserPage(View):
                         "written_articles": written_articles}
         return render(request, 'main_blog/profile.html', profile_data)
 
-
+@method_decorator(login_required(login_url='/user/login'), name='dispatch')
 class CreateArticle(View):
     """return html template with form for creating articles"""
     def get(self, request):
@@ -46,23 +49,25 @@ class CreateArticle(View):
         return render(request, 'main_blog/create_article.html', {"form": form})
 
     def post(self, request):
-        if request.user.is_authenticated:
-            form = WriteArticleForm(request.POST, request.FILES)
-            if form.is_valid():
-                author = User.objects.get(id=request.user.id)
-                title = form.cleaned_data.get('title')
-                preview_pic = form.cleaned_data.get('uploaded_photo')
-                content = form.cleaned_data.get('content')
-                category_list = Category.objects.get(name=form.cleaned_data.get('category')).id
-                slug = slugify(title)
-                new_article = Article.objects.create(slug=slug, author=author, title=title,
-                                                     preview_pic=preview_pic,
-                                                     content=content)
-                new_article.category_list.set([category_list])
-                new_article.save()
-                url = reverse('main_blog:blog')
-                return HttpResponseRedirect(url)
-            else:
-                return render(request, 'main_blog/create_article.html', {"form": form})
+        form = WriteArticleForm(request.POST, request.FILES)
+        if form.is_valid():
+            author = User.objects.get(id=request.user.id)
+            title = form.cleaned_data.get('title')
+            preview_pic = form.cleaned_data.get('uploaded_photo')
+            content = form.cleaned_data.get('content')
+            category_list = Category.objects.get(name=form.cleaned_data.get('category')).id
+            slug = slugify(title)
+            new_article = Article.objects.create(slug=slug, author=author, title=title,
+                                                 preview_pic=preview_pic,
+                                                 content=content)
+            new_article.category_list.set([category_list])
+            new_article.save()
+            url = reverse('main_blog:blog')
+            return HttpResponseRedirect(url)
         else:
-            return HttpResponse("Вы не авторизированный пользователь!")
+            return render(request, 'main_blog/create_article.html', {"form": form})
+
+
+class AboutProject(View):
+    def get(self, request):
+        return HttpResponse('page about project')
